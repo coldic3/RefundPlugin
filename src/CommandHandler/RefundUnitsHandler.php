@@ -46,7 +46,7 @@ final class RefundUnitsHandler
 
         /** @var RefunderInterface $refunder */
         foreach ($this->refunders as $refunder) {
-            $refundedTotal += $refunder->refundFromOrder($units, $orderNumber);
+            $refundedTotal += $refunder->refundFromOrder($units->toArray(), $orderNumber);
         }
 
         /** @var string|null $currencyCode */
@@ -55,7 +55,7 @@ final class RefundUnitsHandler
 
         $this->eventBus->dispatch(new UnitsRefunded(
             $orderNumber,
-            $units,
+            $units->toArray(),
             $command->paymentMethodId(),
             $refundedTotal,
             $currencyCode,

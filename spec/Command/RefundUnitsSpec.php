@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace spec\Sylius\RefundPlugin\Command;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Sylius\RefundPlugin\Model\UnitRefundInterface;
 
@@ -20,7 +21,7 @@ final class RefundUnitsSpec extends ObjectBehavior
 {
     function it_represents_an_intention_to_refund_specific_units(UnitRefundInterface $orderItemUnit, UnitRefundInterface $shipmentUnit): void
     {
-        $unitRefunds = [$orderItemUnit, $shipmentUnit];
+        $unitRefunds = new ArrayCollection([$orderItemUnit->getWrappedObject(), $shipmentUnit->getWrappedObject()]);
 
         $this->beConstructedWith('000222', $unitRefunds, 1, 'Comment');
 
@@ -32,7 +33,7 @@ final class RefundUnitsSpec extends ObjectBehavior
 
     function it_throws_an_exception_if_units_are_not_an_instance_of_unit_refund_interface(): void
     {
-        $this->beConstructedWith('000222', [new \stdClass()], 1, 'Comment');
+        $this->beConstructedWith('000222', new ArrayCollection([new \stdClass()]), 1, 'Comment');
 
         $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
     }

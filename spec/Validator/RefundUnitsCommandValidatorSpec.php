@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace spec\Sylius\RefundPlugin\Validator;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 use Sylius\RefundPlugin\Checker\OrderRefundingAvailabilityCheckerInterface;
 use Sylius\RefundPlugin\Command\RefundUnits;
 use Sylius\RefundPlugin\Exception\InvalidRefundAmount;
@@ -36,7 +38,7 @@ final class RefundUnitsCommandValidatorSpec extends ObjectBehavior
     ): void {
         $orderRefundingAvailabilityChecker->__invoke('000001')->willReturn(false);
 
-        $refundUnits = new RefundUnits('000001', [], 1, '');
+        $refundUnits = new RefundUnits('000001', new ArrayCollection(), 1, '');
 
         $this
             ->shouldThrow(OrderNotAvailableForRefunding::class)
@@ -52,10 +54,12 @@ final class RefundUnitsCommandValidatorSpec extends ObjectBehavior
 
         $orderItemUnitRefund = new OrderItemUnitRefund(1, 10);
 
-        $refundUnits = new RefundUnits('000001', [$orderItemUnitRefund], 1, '');
+        $itemUnitRefunds = new ArrayCollection([$orderItemUnitRefund]);
+
+        $refundUnits = new RefundUnits('000001', $itemUnitRefunds, 1, '');
 
         $refundAmountValidator
-            ->validateUnits([$orderItemUnitRefund])
+            ->validateUnits(Argument::withEntry(0, $orderItemUnitRefund))
             ->willThrow(InvalidRefundAmount::class)
         ;
 
@@ -70,10 +74,11 @@ final class RefundUnitsCommandValidatorSpec extends ObjectBehavior
 
         $shipmentRefund = new ShipmentRefund(1, 10);
 
-        $refundUnits = new RefundUnits('000001', [$shipmentRefund], 1, '');
+        $shipmentRefunds = new ArrayCollection([$shipmentRefund]);
+        $refundUnits = new RefundUnits('000001', $shipmentRefunds, 1, '');
 
         $refundAmountValidator
-            ->validateUnits([$shipmentRefund])
+            ->validateUnits(Argument::withEntry(0, $shipmentRefund))
             ->willThrow(InvalidRefundAmount::class)
         ;
 

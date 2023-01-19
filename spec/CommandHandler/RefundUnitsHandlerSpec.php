@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace spec\Sylius\RefundPlugin\CommandHandler;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Sylius\Component\Core\Model\OrderInterface;
@@ -77,7 +78,7 @@ final class RefundUnitsHandlerSpec extends ObjectBehavior
         );
         $eventBus->dispatch($event)->willReturn(new Envelope($event))->shouldBeCalled();
 
-        $this(new RefundUnits('000222', $unitRefunds, 1, 'Comment'));
+        $this(new RefundUnits('000222', new ArrayCollection($unitRefunds), 1, 'Comment'));
     }
 
     function it_throws_an_exception_if_order_is_not_available_for_refund(
@@ -85,7 +86,12 @@ final class RefundUnitsHandlerSpec extends ObjectBehavior
     ): void {
         $refundUnitsCommand = new RefundUnits(
             '000222',
-            [new OrderItemUnitRefund(1, 3000), new OrderItemUnitRefund(3, 4000), new ShipmentRefund(3, 500), new ShipmentRefund(4, 1000)],
+            new ArrayCollection([
+                new OrderItemUnitRefund(1, 3000),
+                new OrderItemUnitRefund(3, 4000),
+                new ShipmentRefund(3, 500),
+                new ShipmentRefund(4, 1000),
+            ]),
             1,
             'Comment'
         );

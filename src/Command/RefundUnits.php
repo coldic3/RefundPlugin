@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sylius\RefundPlugin\Command;
 
+use Doctrine\Common\Collections\Collection;
 use Sylius\RefundPlugin\Model\UnitRefundInterface;
 use Webmozart\Assert\Assert;
 
@@ -20,7 +21,7 @@ class RefundUnits
 {
     public function __construct(
         private string $orderNumber,
-        private array $units,
+        private Collection $units,
         private int $paymentMethodId,
         private string $comment
     ) {
@@ -32,8 +33,8 @@ class RefundUnits
         return $this->orderNumber;
     }
 
-    /** @return array|UnitRefundInterface[] */
-    public function units(): array
+    /** @return Collection<UnitRefundInterface> */
+    public function units(): Collection
     {
         return $this->units;
     }

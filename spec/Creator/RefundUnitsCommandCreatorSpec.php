@@ -47,15 +47,17 @@ final class RefundUnitsCommandCreatorSpec extends ObjectBehavior
             'sylius_refund_comment' => 'Comment',
         ]);
 
-        $refundUnitsConverter->convert($request)->willReturn(new ArrayCollection([
+        $refundsCollection = new ArrayCollection([
             $firstUnitRefund->getWrappedObject(),
             $secondUnitRefund->getWrappedObject(),
             $shipmentRefund->getWrappedObject(),
-        ]));
+        ]);
+
+        $refundUnitsConverter->convert($request)->willReturn($refundsCollection);
 
         $this->fromRequest($request)->shouldReturnCommand(new RefundUnits(
             '00001111',
-            [$firstUnitRefund->getWrappedObject(), $secondUnitRefund->getWrappedObject(), $shipmentRefund->getWrappedObject()],
+            $refundsCollection,
             1,
             'Comment'
         ));

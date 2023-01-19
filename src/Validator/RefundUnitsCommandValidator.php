@@ -38,6 +38,6 @@ final class RefundUnitsCommandValidator implements RefundUnitsCommandValidatorIn
         }
 
         $units = $command->units();
-        $this->refundAmountValidator->validateUnits($units);
+        $this->refundAmountValidator->validateUnits($units->toArray());
     }
 }
