@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace spec\Sylius\RefundPlugin\Converter;
 
+use Doctrine\Common\Collections\Collection;
 use PhpSpec\ObjectBehavior;
 use Sylius\RefundPlugin\Converter\RefundUnitsConverterInterface;
 use Sylius\RefundPlugin\Converter\RequestToRefundUnitsConverterInterface;
@@ -34,6 +35,7 @@ final class RequestToOrderItemUnitRefundConverterSpec extends ObjectBehavior
 
     function it_creates_order_item_units_refunds_from_request(
         RefundUnitsConverterInterface $refundUnitsConverter,
+        Collection $collection,
         Request $request
     ): void {
         $firstUnitRefund = new OrderItemUnitRefund(1, 1000);
@@ -54,9 +56,9 @@ final class RequestToOrderItemUnitRefundConverterSpec extends ObjectBehavior
                 ],
                 OrderItemUnitRefund::class
             )
-            ->willReturn([$firstUnitRefund, $secondUnitRefund])
+            ->willReturn($collection)
         ;
 
-        $this->convert($request)->shouldReturn([$firstUnitRefund, $secondUnitRefund]);
+        $this->convert($request)->shouldReturn($collection);
     }
 }

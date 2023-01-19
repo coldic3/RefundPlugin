@@ -29,7 +29,7 @@ final class RefundUnitsCommandCreator implements RefundUnitsCommandCreatorInterf
     {
         Assert::true($request->attributes->has('orderNumber'), 'Refunded order number not provided');
 
-        $units = $this->requestToRefundUnitsConverter->convert($request);
+        $units = $this->requestToRefundUnitsConverter->convert($request)->toArray();
 
         if (count($units) === 0) {
             throw InvalidRefundAmount::withValidationConstraint('sylius_refund.at_least_one_unit_should_be_selected_to_refund');

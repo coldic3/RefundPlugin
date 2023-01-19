@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sylius\RefundPlugin\Converter;
 
+use Doctrine\Common\Collections\Collection;
 use Sylius\RefundPlugin\Model\OrderItemUnitRefund;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -25,10 +26,7 @@ final class RequestToOrderItemUnitRefundConverter implements RequestToRefundUnit
         $this->refundUnitsConverter = $refundUnitsConverter;
     }
 
-    /**
-     * @return OrderItemUnitRefund[]
-     */
-    public function convert(Request $request): array
+    public function convert(Request $request): Collection
     {
         return $this->refundUnitsConverter->convert(
             $request->request->has('sylius_refund_units') ? $request->request->all()['sylius_refund_units'] : [],

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sylius\RefundPlugin\Converter;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Sylius\RefundPlugin\Calculator\UnitRefundTotalCalculatorInterface;
 use Sylius\RefundPlugin\Model\UnitRefundInterface;
 use Webmozart\Assert\Assert;
@@ -26,7 +28,7 @@ final class RefundUnitsConverter implements RefundUnitsConverterInterface
         $this->unitRefundTotalCalculator = $unitRefundTotalCalculator;
     }
 
-    public function convert(array $units, string $unitRefundClass): array
+    public function convert(array $units, string $unitRefundClass): Collection
     {
         $units = $this->filterEmptyRefundUnits($units);
         $refundUnits = [];
@@ -42,7 +44,7 @@ final class RefundUnitsConverter implements RefundUnitsConverterInterface
             $refundUnits[] = $unitRefund;
         }
 
-        return $refundUnits;
+        return new ArrayCollection($refundUnits);
     }
 
     private function filterEmptyRefundUnits(array $units): array

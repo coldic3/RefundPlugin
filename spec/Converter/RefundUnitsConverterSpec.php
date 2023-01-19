@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace spec\Sylius\RefundPlugin\Converter;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Sylius\RefundPlugin\Calculator\UnitRefundTotalCalculatorInterface;
 use Sylius\RefundPlugin\Converter\RefundUnitsConverterInterface;
@@ -45,7 +46,7 @@ final class RefundUnitsConverterSpec extends ObjectBehavior
                 ],
                 OrderItemUnitRefund::class
             )
-            ->shouldBeLike([new OrderItemUnitRefund(1, 1000), new OrderItemUnitRefund(2, 3000)])
+            ->shouldBeLike(new ArrayCollection([new OrderItemUnitRefund(1, 1000), new OrderItemUnitRefund(2, 3000)]))
         ;
     }
 
@@ -63,7 +64,7 @@ final class RefundUnitsConverterSpec extends ObjectBehavior
                 ],
                 OrderItemUnitRefund::class
             )
-            ->shouldBeLike([new OrderItemUnitRefund(1, 1000), new OrderItemUnitRefund(2, 3000)])
+            ->shouldBeLike(new ArrayCollection([new OrderItemUnitRefund(1, 1000), new OrderItemUnitRefund(2, 3000)]))
         ;
     }
 }

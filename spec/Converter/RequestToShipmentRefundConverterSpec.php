@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace spec\Sylius\RefundPlugin\Converter;
 
+use Doctrine\Common\Collections\Collection;
 use PhpSpec\ObjectBehavior;
 use Sylius\RefundPlugin\Converter\RefundUnitsConverterInterface;
 use Sylius\RefundPlugin\Converter\RequestToRefundUnitsConverterInterface;
@@ -34,6 +35,7 @@ final class RequestToShipmentRefundConverterSpec extends ObjectBehavior
 
     function it_creates_shipment_refund_units_from_request(
         RefundUnitsConverterInterface $refundUnitsConverter,
+        Collection $collection,
         Request $request
     ): void {
         $shipmentRefund = new ShipmentRefund(1, 5000);
@@ -49,9 +51,9 @@ final class RequestToShipmentRefundConverterSpec extends ObjectBehavior
                 [1 => ['full' => 'on']],
                 ShipmentRefund::class
             )
-            ->willReturn([$shipmentRefund])
+            ->willReturn($collection)
         ;
 
-        $this->convert($request)->shouldReturn([$shipmentRefund]);
+        $this->convert($request)->shouldReturn($collection);
     }
 }

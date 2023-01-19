@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace spec\Sylius\RefundPlugin\Creator;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Sylius\RefundPlugin\Command\RefundUnits;
 use Sylius\RefundPlugin\Converter\RequestToRefundUnitsConverterInterface;
@@ -46,7 +47,11 @@ final class RefundUnitsCommandCreatorSpec extends ObjectBehavior
             'sylius_refund_comment' => 'Comment',
         ]);
 
-        $refundUnitsConverter->convert($request)->willReturn([$firstUnitRefund, $secondUnitRefund, $shipmentRefund]);
+        $refundUnitsConverter->convert($request)->willReturn(new ArrayCollection([
+            $firstUnitRefund->getWrappedObject(),
+            $secondUnitRefund->getWrappedObject(),
+            $shipmentRefund->getWrappedObject(),
+        ]));
 
         $this->fromRequest($request)->shouldReturnCommand(new RefundUnits(
             '00001111',
@@ -63,7 +68,7 @@ final class RefundUnitsCommandCreatorSpec extends ObjectBehavior
         $request->attributes = new ParameterBag(['orderNumber' => '00001111']);
         $request->request = new ParameterBag(['sylius_refund_payment_method' => 1]);
 
-        $refundUnitsConverter->convert($request)->willReturn([]);
+        $refundUnitsConverter->convert($request)->willReturn(new ArrayCollection([]));
 
         $this
             ->shouldThrow(\InvalidArgumentException::class)

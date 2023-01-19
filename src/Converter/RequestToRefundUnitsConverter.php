@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sylius\RefundPlugin\Converter;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\Request;
 
 final class RequestToRefundUnitsConverter implements RequestToRefundUnitsConverterInterface
@@ -23,14 +25,14 @@ final class RequestToRefundUnitsConverter implements RequestToRefundUnitsConvert
     ) {
     }
 
-    public function convert(Request $request): array
+    public function convert(Request $request): Collection
     {
         $units = [];
 
         foreach ($this->refundUnitsConverters as $refundUnitsConverter) {
-            $units = array_merge($units, $refundUnitsConverter->convert($request));
+            $units = array_merge($units, $refundUnitsConverter->convert($request)->toArray());
         }
 
-        return $units;
+        return new ArrayCollection($units);
     }
 }

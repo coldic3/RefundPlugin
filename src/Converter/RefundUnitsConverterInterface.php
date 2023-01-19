@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sylius\RefundPlugin\Converter;
 
+use Doctrine\Common\Collections\Collection;
 use Sylius\RefundPlugin\Model\UnitRefundInterface;
 
 interface RefundUnitsConverterInterface
@@ -22,7 +23,7 @@ interface RefundUnitsConverterInterface
      *
      * @param class-string<T> $unitRefundClass
      *
-     * @return T[]
+     * @return Collection<T>
      */
-    public function convert(array $units, string $unitRefundClass): array;
+    public function convert(array $units, string $unitRefundClass): Collection;
 }
