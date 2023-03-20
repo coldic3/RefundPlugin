@@ -23,8 +23,7 @@ use Sylius\RefundPlugin\Entity\RefundPaymentInterface;
 use Sylius\RefundPlugin\Event\RefundPaymentGenerated;
 use Sylius\RefundPlugin\Event\UnitsRefunded;
 use Sylius\RefundPlugin\Factory\RefundPaymentFactoryInterface;
-use Sylius\RefundPlugin\Model\OrderItemUnitRefund;
-use Sylius\RefundPlugin\Model\ShipmentRefund;
+use Sylius\RefundPlugin\Model\UnitRefundInterface;
 use Sylius\RefundPlugin\ProcessManager\UnitsRefundedProcessStepInterface;
 use Sylius\RefundPlugin\Provider\RelatedPaymentIdProviderInterface;
 use Sylius\RefundPlugin\StateResolver\OrderFullyRefundedStateResolverInterface;
@@ -40,7 +39,7 @@ final class RefundPaymentProcessManagerSpec extends ObjectBehavior
         OrderRepositoryInterface $orderRepository,
         PaymentMethodRepositoryInterface $paymentMethodRepository,
         EntityManagerInterface $entityManager,
-        MessageBusInterface $eventBus
+        MessageBusInterface $eventBus,
     ): void {
         $this->beConstructedWith(
             $orderFullyRefundedStateResolver,
@@ -49,7 +48,7 @@ final class RefundPaymentProcessManagerSpec extends ObjectBehavior
             $orderRepository,
             $paymentMethodRepository,
             $entityManager,
-            $eventBus
+            $eventBus,
         );
     }
 
@@ -68,7 +67,9 @@ final class RefundPaymentProcessManagerSpec extends ObjectBehavior
         MessageBusInterface $eventBus,
         RefundPaymentInterface $refundPayment,
         OrderInterface $order,
-        PaymentMethodInterface $paymentMethod
+        PaymentMethodInterface $paymentMethod,
+        UnitRefundInterface $firstUnitRefund,
+        UnitRefundInterface $secondUnitRefund,
     ): void {
         $orderRepository->findOneByNumber('000222')->willReturn($order);
         $paymentMethodRepository->find(1)->willReturn($paymentMethod);
@@ -94,12 +95,11 @@ final class RefundPaymentProcessManagerSpec extends ObjectBehavior
 
         $this->next(new UnitsRefunded(
             '000222',
-            [new OrderItemUnitRefund(1, 500), new OrderItemUnitRefund(2, 500)],
-            [new ShipmentRefund(1, 300)],
+            [$firstUnitRefund->getWrappedObject(), $secondUnitRefund->getWrappedObject()],
             1,
             1000,
             'USD',
-            'Comment'
+            'Comment',
         ));
     }
 }

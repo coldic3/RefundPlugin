@@ -32,8 +32,7 @@ final class CreditMemoProcessManager implements UnitsRefundedProcessStepInterfac
             $unitsRefunded->orderNumber(),
             $unitsRefunded->amount(),
             $unitsRefunded->units(),
-            $unitsRefunded->shipments(),
-            $unitsRefunded->comment()
+            $unitsRefunded->comment(),
         ));
     }
 }

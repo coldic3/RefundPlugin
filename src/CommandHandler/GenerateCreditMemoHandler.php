@@ -37,7 +37,7 @@ final class GenerateCreditMemoHandler
         if (null === $this->creditMemoFileResolver) {
             @trigger_error(
                 sprintf('Not passing a $creditMemoFileResolver to %s constructor is deprecated since sylius/refund-plugin 1.3 and will be prohibited in 2.0.', self::class),
-                \E_USER_DEPRECATED
+                \E_USER_DEPRECATED,
             );
         }
     }
@@ -51,9 +51,8 @@ final class GenerateCreditMemoHandler
         $creditMemo = $this->creditMemoGenerator->generate(
             $order,
             $command->total(),
-            $command->units(),
-            $command->shipments(),
-            $command->comment()
+            array_merge($command->units(), $command->shipments()),
+            $command->comment(),
         );
 
         $this->creditMemoManager->persist($creditMemo);

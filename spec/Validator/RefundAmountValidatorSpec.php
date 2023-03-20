@@ -33,7 +33,7 @@ final class RefundAmountValidatorSpec extends ObjectBehavior
     }
 
     function it_throws_exception_if_unit_refund_total_is_bigger_than_remaining_unit_refunded_total(
-        RemainingTotalProviderInterface $remainingTotalProvider
+        RemainingTotalProviderInterface $remainingTotalProvider,
     ): void {
         $correctOrderItemUnitRefund = new OrderItemUnitRefund(2, 10);
         $refundType = RefundType::orderItemUnit();
@@ -42,7 +42,7 @@ final class RefundAmountValidatorSpec extends ObjectBehavior
 
         $this
             ->shouldThrow(InvalidRefundAmount::class)
-            ->during('validateUnits', [[$correctOrderItemUnitRefund], $refundType])
+            ->during('validateUnits', [[$correctOrderItemUnitRefund]])
         ;
     }
 
@@ -55,10 +55,40 @@ final class RefundAmountValidatorSpec extends ObjectBehavior
             ->shouldThrow(InvalidRefundAmount::class)
             ->during(
                 'validateUnits',
+                [[$incorrectOrderItemUnitRefund, $correctOrderItemUnitRefund]],
+            )
+        ;
+    }
+
+    /** @legacy will be removed in RefundPlugin 2.0 */
+    function it_throws_exception_if_unit_refund_total_is_bigger_than_remaining_unit_refunded_total_with_deprecations(
+        RemainingTotalProviderInterface $remainingTotalProvider,
+    ): void {
+        $correctOrderItemUnitRefund = new OrderItemUnitRefund(2, 10);
+        $refundType = RefundType::orderItemUnit();
+
+        $remainingTotalProvider->getTotalLeftToRefund(2, $refundType)->willReturn(5);
+
+        $this
+            ->shouldThrow(InvalidRefundAmount::class)
+            ->during('validateUnits', [[$correctOrderItemUnitRefund], $refundType])
+        ;
+    }
+
+    /** @legacy will be removed in RefundPlugin 2.0 */
+    function it_throws_exception_if_total_of_at_least_one_unit_is_below_zero_with_deprecations(): void
+    {
+        $incorrectOrderItemUnitRefund = new OrderItemUnitRefund(1, -10);
+        $correctOrderItemUnitRefund = new OrderItemUnitRefund(2, 10);
+
+        $this
+            ->shouldThrow(InvalidRefundAmount::class)
+            ->during(
+                'validateUnits',
                 [
                     [$incorrectOrderItemUnitRefund, $correctOrderItemUnitRefund],
                     RefundType::orderItemUnit(),
-                ]
+                ],
             )
         ;
     }
